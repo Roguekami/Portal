@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #F7F6F2;
+  }
+}
+
+@layer utilities {
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  
+  .form-input:focus {
+    border-color: #fcca66 !important;
+    box-shadow: 0 0 0 4px rgba(252, 202, 102, 0.2) !important;
+    outline: none;
+  }
+}
