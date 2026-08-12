@@ -2,12 +2,19 @@ import { useState } from 'react';
 import Layout from '../../components/Layout';
 import { mockExamQuestions } from '../../data/mockData';
 
-const CBTExam = () => {
+export default function CBTExam() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
-
+  
   const question = mockExamQuestions[currentQuestionIndex];
   
+  const handleSelectOption = (option: string) => {
+    setSelectedAnswers({
+      ...selectedAnswers,
+      [question.id]: option
+    });
+  };
+
   const handleNext = () => {
     if (currentQuestionIndex < mockExamQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -20,75 +27,81 @@ const CBTExam = () => {
     }
   };
 
-  const handleSelectOption = (option: string) => {
-    setSelectedAnswers(prev => ({
-      ...prev,
-      [question.id]: option
-    }));
-  };
-
   return (
     <Layout role="student">
-      <div className="max-w-[1000px] mx-auto px-margin_mobile md:px-margin_desktop py-8">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="font-display-lg text-display-lg text-primary">Mathematics Mid-Term</h2>
-          <div className="bg-error/10 text-error font-data-numeric text-xl px-4 py-2 rounded-lg font-bold">
-            44:59
+      <div className="page-enter min-h-screen flex flex-col">
+        <header className="w-full flex flex-col sm:flex-row justify-between items-center py-6 z-10 relative border-b border-outline-variant/30 mb-8">
+          <div className="flex items-center gap-4 mb-4 sm:mb-0">
+            <h1 className="font-headline-md text-headline-md text-primary">Advanced Biology 301: Midterm</h1>
           </div>
-        </div>
-        
-        <div className="bg-surface-container-lowest border border-[#E5E5E1] rounded-lg p-8 mb-6">
-          <div className="flex justify-between items-center mb-6 text-on-surface-variant font-label-md">
-            <span>Question {currentQuestionIndex + 1} of {mockExamQuestions.length}</span>
-            <span>2.5 points</span>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-lg border border-outline-variant/30">
+              <span className="material-symbols-outlined text-error">timer</span>
+              <span className="font-data-numeric text-data-numeric text-error">24:05</span>
+            </div>
           </div>
-          
-          <h3 className="font-body-lg text-xl mb-8">{question.text}</h3>
-          
-          <div className="space-y-4">
-            {question.options.map((option, idx) => {
-              const isSelected = selectedAnswers[question.id] === option;
-              return (
-                <div 
-                  key={idx} 
-                  onClick={() => handleSelectOption(option)}
-                  className={`p-4 border rounded-lg cursor-pointer transition-colors flex items-center gap-3 ${isSelected ? 'border-primary bg-primary/5' : 'border-outline-variant/50 hover:bg-surface-container-low'}`}
+        </header>
+
+        <main className="flex-grow flex items-center justify-center z-10 relative">
+          <div className="w-full max-w-3xl flex flex-col gap-8">
+            <div className="bg-surface-container-lowest rounded-xl p-8 shadow-sm border border-outline-variant/20 card">
+              <div className="flex justify-between items-start mb-6 border-b border-surface-container-high pb-4">
+                <span className="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest section-label">Question {currentQuestionIndex + 1} of {mockExamQuestions.length}</span>
+                <span className="font-label-md text-label-md text-secondary">2 points</span>
+              </div>
+              <h2 className="font-headline-md text-headline-md text-primary mb-8 leading-relaxed">
+                {question.text}
+              </h2>
+              
+              <div className="flex flex-col gap-4">
+                {question.options.map((option, index) => {
+                  const letter = String.fromCharCode(65 + index);
+                  const isSelected = selectedAnswers[question.id] === option;
+                  
+                  return (
+                    <button 
+                      key={option}
+                      className={`rounded-xl p-6 flex items-center gap-4 text-left w-full border ${isSelected ? 'border-secondary bg-secondary/5 ring ring-secondary/20 shadow-sm' : 'border-outline-variant/20 bg-surface-container-lowest hover:border-secondary hover:shadow-sm'} transition-all`}
+                      onClick={() => handleSelectOption(option)}
+                    >
+                      <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center font-data-numeric text-data-numeric flex-shrink-0 ${isSelected ? 'border-secondary bg-secondary text-on-secondary' : 'border-outline-variant text-on-surface-variant'}`}>
+                        {letter}
+                      </div>
+                      <span className="font-body-lg text-body-lg text-primary">{option}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center bg-surface-container-lowest rounded-xl p-4 shadow-sm border border-outline-variant/20 card">
+              <button 
+                onClick={handlePrev} 
+                disabled={currentQuestionIndex === 0}
+                className="px-6 py-3 flex items-center gap-2 font-label-md text-label-md border border-primary text-primary rounded-lg hover:bg-primary/5 disabled:opacity-50"
+              >
+                <span className="material-symbols-outlined">arrow_back</span>
+                Previous
+              </button>
+              
+              {currentQuestionIndex === mockExamQuestions.length - 1 ? (
+                <button className="bg-primary text-on-primary px-8 py-3 flex items-center gap-2 font-label-md text-label-md rounded-lg hover:opacity-90 shadow-sm">
+                  Submit Exam
+                  <span className="material-symbols-outlined">check_circle</span>
+                </button>
+              ) : (
+                <button 
+                  onClick={handleNext}
+                  className="bg-primary text-on-primary px-6 py-3 flex items-center gap-2 font-label-md text-label-md rounded-lg hover:opacity-90 shadow-sm"
                 >
-                  <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${isSelected ? 'border-primary' : 'border-outline'}`}>
-                    {isSelected && <div className="w-3 h-3 rounded-full bg-primary"></div>}
-                  </div>
-                  <span className="font-body-md">{option}</span>
-                </div>
-              );
-            })}
+                  Next
+                  <span className="material-symbols-outlined">arrow_forward</span>
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-        
-        <div className="flex justify-between items-center">
-          <button 
-            onClick={handlePrev}
-            disabled={currentQuestionIndex === 0}
-            className="px-6 py-2 border border-outline-variant rounded-lg font-label-md text-on-surface-variant disabled:opacity-50 hover:bg-surface-container-low transition-colors"
-          >
-            Previous
-          </button>
-          
-          {currentQuestionIndex === mockExamQuestions.length - 1 ? (
-            <button className="px-8 py-2 bg-secondary text-white rounded-lg font-label-md hover:bg-secondary-container hover:text-on-secondary-container transition-colors shadow-md">
-              Submit Exam
-            </button>
-          ) : (
-            <button 
-              onClick={handleNext}
-              className="px-6 py-2 bg-primary text-on-primary rounded-lg font-label-md hover:opacity-90 transition-opacity"
-            >
-              Next
-            </button>
-          )}
-        </div>
+        </main>
       </div>
     </Layout>
   );
-};
-
-export default CBTExam;
+}

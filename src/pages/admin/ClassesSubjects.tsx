@@ -2,44 +2,69 @@
 import Layout from '../../components/Layout';
 import { mockClasses } from '../../data/mockData';
 
-const ClassesSubjects = () => {
+export default function ClassesSubjects() {
   return (
     <Layout role="admin">
-      <div className="max-w-[1440px] mx-auto px-margin_mobile md:px-margin_desktop py-8">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="font-display-lg text-display-lg text-primary">Classes & Subjects</h2>
-          <button className="bg-primary text-on-primary font-label-md text-label-md px-4 py-2 rounded-lg flex items-center gap-2">
-            <span className="material-symbols-outlined">add</span>
-            Add Class
-          </button>
-        </div>
+      <div className="page-enter max-w-[1440px] mx-auto px-4 md:px-10 py-8 flex flex-col h-[calc(100vh-64px)] overflow-y-auto">
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mockClasses.map((cls) => (
-            <div key={cls.id} className="bg-surface-container-lowest border border-[#E5E5E1] rounded-lg p-6">
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="font-headline-md text-headline-md text-primary">{cls.name}</h3>
-                <span className="material-symbols-outlined text-outline">class</span>
-              </div>
-              <div className="space-y-2">
-                <div className="flex justify-between font-label-md text-label-md">
-                  <span className="text-on-surface-variant">Form Teacher:</span>
-                  <span className="text-primary font-medium">{cls.formTeacher}</span>
+        {/* Header */}
+        <div className="flex justify-between items-end mb-8">
+          <div>
+            <h2 className="font-headline-lg text-headline-lg text-primary">Classes &amp; Subjects</h2>
+            <p className="font-body-md text-on-surface-variant mt-1">Manage institutional class structures and subject assignments.</p>
+          </div>
+          <div className="flex gap-4">
+            <button className="bg-surface-container-lowest border border-primary text-primary px-4 py-2 rounded-lg font-label-md flex items-center gap-2 hover:bg-surface-container-low transition-colors shadow-sm">
+              <span className="material-symbols-outlined text-[18px]">download</span>
+              Export List
+            </button>
+          </div>
+        </div>
+
+        {/* Classes Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-12">
+          {mockClasses.map(cls => (
+            <div key={cls.id} className="card-elevated rounded-xl p-6 flex flex-col gap-4 hover:paper-shadow transition-all group">
+              <div className="flex justify-between items-start border-b border-outline-variant/10 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-headline-md">
+                    {cls.name.split(' ')[0]}
+                  </div>
+                  <div>
+                    <h3 className="font-headline-md text-primary">{cls.name}</h3>
+                    <p className="font-label-md text-on-surface-variant flex items-center gap-1 mt-1">
+                      <span className="material-symbols-outlined text-[16px]">person</span> {cls.formTeacher}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex justify-between font-label-md text-label-md">
-                  <span className="text-on-surface-variant">Students:</span>
-                  <span className="text-primary font-medium">{cls.studentsCount}</span>
+              </div>
+
+              <div className="flex justify-between items-center py-2">
+                <span className="font-label-md text-outline uppercase tracking-wider text-[12px]">Students Enrolled</span>
+                <span className="font-data-numeric text-[18px] text-primary font-medium">{cls.studentsCount}</span>
+              </div>
+
+              <div>
+                <span className="font-label-md text-outline uppercase tracking-wider text-[12px] block mb-2">Subjects Assigned ({cls.subjects.length})</span>
+                <div className="flex flex-wrap gap-2">
+                  {cls.subjects.map(sub => (
+                    <span key={sub} className="px-2 py-1 bg-surface-container rounded-lg text-[12px] font-medium text-on-surface-variant border border-outline-variant/10">
+                      {sub}
+                    </span>
+                  ))}
                 </div>
               </div>
-              <div className="mt-4 pt-4 border-t border-outline-variant/30 flex justify-end gap-2">
-                <button className="text-secondary hover:text-primary p-2"><span className="material-symbols-outlined">edit</span></button>
+
+              <div className="mt-auto pt-4 border-t border-outline-variant/10 flex justify-end">
+                <button className="text-secondary hover:text-primary font-label-md flex items-center gap-1 transition-colors">
+                  View Details <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                </button>
               </div>
             </div>
           ))}
         </div>
+
       </div>
     </Layout>
   );
-};
-
-export default ClassesSubjects;
+}
